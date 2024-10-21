@@ -4,6 +4,10 @@ package com.example.demo.controllers;
 import com.example.demo.models.FizicheskoLice;
 import com.example.demo.services.FizicheskoLiceService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +21,7 @@ import java.util.List;
 @Validated
 public class FizicheskoLiceController {
 
-    private final FizicheskoLiceService service;
+    private FizicheskoLiceService service;
 
     public FizicheskoLiceController(FizicheskoLiceService service) {
         this.service = service;
@@ -46,8 +50,21 @@ public class FizicheskoLiceController {
             @RequestParam String lastNamePrefix,
             @RequestParam(defaultValue = "0") int minAge,
             @RequestParam(required = false) Integer maxAge) {
+
+        if (maxAge != null && minAge <= maxAge){
+            throw new IllegalArgumentException("Максималните години не могат да бъдат по-малко от минималните.");
+        }
+
         List<FizicheskoLice> results = service.searchByLastNameAndAge(lastNamePrefix, minAge, maxAge);
         return ResponseEntity.ok(results);
+    }
+ @GetMapping
+    public Page<FizicheskoLice> showPeople(
+         @RequestParam(defaultValue = "0") int page,
+         @RequestParam(defaultValue = "5") int size) {
+     Pageable pageable = PageRequest.of(page, size);
+
+        return service.showFizicheskiLica(pageable);
     }
     @PutMapping("/{id}")
     public ResponseEntity<FizicheskoLice> updateById(

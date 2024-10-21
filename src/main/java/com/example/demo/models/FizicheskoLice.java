@@ -27,7 +27,7 @@ import jakarta.validation.constraints.Pattern;
     @Column
         @NotBlank(message = "Фамилията е задължителна")
         private String lastName;
-    @Column
+    @Column(unique = true)
         @Pattern(regexp = "\\d{10}", message = "ЕГН-то трябва да съдържа 10 цифри")
         private String egn;
     @Column

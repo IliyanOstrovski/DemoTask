@@ -2,6 +2,8 @@ package com.example.demo.services;
 
 import com.example.demo.models.FizicheskoLice;
 import com.example.demo.repositories.FizicheskoLiceRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.Optional;
 @Service
 public class FizicheskoLiceService {
 
-    private final FizicheskoLiceRepository repository;
+    private FizicheskoLiceRepository repository;
 
     public FizicheskoLiceService(FizicheskoLiceRepository repository) {
         this.repository = repository;
@@ -26,11 +28,16 @@ public class FizicheskoLiceService {
 
     public List<FizicheskoLice> searchByLastNameAndAge(String lastNamePrefix, int minAge, int maxAge) {
         if (maxAge < 0) {
-            return repository.findByLastNameStartingWithAndAgeGreaterThan(lastNamePrefix, minAge);
+            throw new IllegalArgumentException("Max Age can't be under 0");
         } else {
             return repository.findByLastNameStartingWithAndAgeBetween(lastNamePrefix, minAge, maxAge);
         }
     }
+
+    public Page<FizicheskoLice> showFizicheskiLica(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
     public Optional<FizicheskoLice> updateById(Long id, FizicheskoLice updatedLice) {
         return repository.findById(id).map(existingLice -> {
             existingLice.setFirstName(updatedLice.getFirstName());
