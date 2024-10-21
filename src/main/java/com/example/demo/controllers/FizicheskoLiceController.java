@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 
+import com.example.demo.dto.PageRequestDTO;
 import com.example.demo.models.FizicheskoLice;
 import com.example.demo.services.FizicheskoLiceService;
 import jakarta.validation.Valid;
@@ -58,11 +59,10 @@ public class FizicheskoLiceController {
         List<FizicheskoLice> results = service.searchByLastNameAndAge(lastNamePrefix, minAge, maxAge);
         return ResponseEntity.ok(results);
     }
- @GetMapping
-    public Page<FizicheskoLice> showPeople(
-         @RequestParam(defaultValue = "0") int page,
-         @RequestParam(defaultValue = "5") int size) {
-     Pageable pageable = PageRequest.of(page, size);
+
+    @GetMapping
+    public Page<FizicheskoLice> showPeople(@Valid PageRequestDTO pageRequestDTO ) {
+        Pageable pageable = pageRequestDTO.toPageable();
 
         return service.showFizicheskiLica(pageable);
     }
