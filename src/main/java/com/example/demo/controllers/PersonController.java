@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dto.PersonSearchDTO;
 import com.example.demo.models.Person;
 import com.example.demo.services.PersonService;
 import jakarta.validation.Valid;
@@ -10,12 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 @RestController
 @RequestMapping("/api/persons")
-@Validated
+@Valid
 public class PersonController {
 
     private final PersonService service;
@@ -42,23 +44,35 @@ public class PersonController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    // 3. Търсене на ФЛ по части от фамилия и възраст
-    @GetMapping()
-    public ResponseEntity<List<Person>> search(
-            @RequestParam String firstName,
-            @RequestParam(defaultValue = "0") int minAge,
-            @RequestParam(required = false) Integer maxAge) {
+    // 3. Търсене на ФЛ по име и възраст
 
-        if (maxAge == null){
-            throw new NullPointerException("Полето е задължително");
-        }
-        else if (minAge > maxAge){
-            throw new IllegalArgumentException("Максималните години не могат да бъдат по-малко от минималните.");
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Person>> search(@Valid PersonSearchDTO request) {
+
+        List<Person> results = service.searchByFirstNameAndAge(
+                request.getFirstName(),
+                request.getMinAge(),
+                request.getMaxAge()
+        );
+        return ResponseEntity.ok(results);
+    }
+
+/*    @GetMapping()
+    public ResponseEntity<List<Person>> search(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(defaultValue = "0") int minAge,
+            @RequestParam(required = false, defaultValue = "100") Integer maxAge) {
+
+        if (maxAge != null && minAge > maxAge) {
+            int temp = minAge;
+            minAge = maxAge;
+            maxAge = temp;
         }
 
         List<Person> results = service.searchByFirstNameAndAge(firstName, minAge, maxAge);
         return ResponseEntity.ok(results);
-    }
+    }*/
 
     @PutMapping("/{id}")
     public ResponseEntity<Person> updateById(
@@ -67,6 +81,13 @@ public class PersonController {
         return service.updateById(id, updatedLice)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
+        boolean isDeleted = service.deleteById(id);
+        return isDeleted ? ResponseEntity.noContent().build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 }

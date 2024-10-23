@@ -47,5 +47,15 @@ public class PersonService {
             existingLice.setEgn(updatePerson.getEgn());
             return repository.save(existingLice);
         });
+
     }
+
+    public boolean deleteById(Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
 }
