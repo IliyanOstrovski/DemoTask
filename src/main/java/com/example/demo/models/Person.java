@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "fizicheski_lica")
-    public class FizicheskoLice {
+    public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,9 +82,9 @@ import jakarta.validation.constraints.Pattern;
         this.age = age;
     }
 
-    public FizicheskoLice() {}
+    public Person() {}
 
-    public FizicheskoLice(String firstName, String middleName, String lastName, String egn, int age) {
+    public Person(String firstName, String middleName, String lastName, String egn, int age) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
