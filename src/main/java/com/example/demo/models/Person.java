@@ -8,8 +8,16 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "fizicheski_lica")
     public class Person {
 
@@ -19,79 +27,20 @@ import jakarta.validation.constraints.Pattern;
     private Long id;
 
     @Column
-        @NotBlank(message = "Собственото име е задължително")
-        private String firstName;
+    @NotBlank(message = "Собственото име е задължително")
+    private String firstName;
     @Column
-        @NotBlank(message = "Бащиното име е задължително")
-        private String middleName;
+    @NotBlank(message = "Бащиното име е задължително")
+    private String middleName;
     @Column
-        @NotBlank(message = "Фамилията е задължителна")
-        private String lastName;
+    @NotBlank(message = "Фамилията е задължителна")
+    private String lastName;
     @Column(unique = true)
-        @Pattern(regexp = "\\d{10}", message = "ЕГН-то трябва да съдържа 10 цифри")
-        private String egn;
+    @Pattern(regexp = "\\d{10}", message = "ЕГН-то трябва да съдържа 10 цифри")
+    private String egn;
     @Column
-        @Min(value = 0, message = "Възрастта трябва да бъде положително число")
-        private int age;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEgn() {
-        return egn;
-    }
-
-    public void setEgn(String egn) {
-        this.egn = egn;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Person() {}
-
-    public Person(String firstName, String middleName, String lastName, String egn, int age) {
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.egn = egn;
-        this.age = age;
-    }
-
+    @Min(value = 0, message = "Възрастта трябва да бъде положително число")
+    private int age;
 
 }
 
