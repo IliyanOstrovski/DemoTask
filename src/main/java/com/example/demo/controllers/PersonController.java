@@ -6,22 +6,28 @@ import com.example.demo.services.PersonService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
 @RestController
 @RequestMapping("/api/persons")
-@Valid
+@Validated
 public class PersonController {
 
     private final PersonService service;
-    private static final Logger logger = LoggerFactory.getLogger(PersonController.class);
+
+    // Валидация на празно поле
+    @InitBinder
+    public void initBinder(WebDataBinder dataBinder) {
+        StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+        dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
+    }
 
     public PersonController(PersonService service) {
         this.service = service;
@@ -35,7 +41,6 @@ public class PersonController {
     }
 
 
-
     // 2. Търсене на ФЛ по ЕГН
     @GetMapping("/egn/{egn}")
     public ResponseEntity<Person> getByEgn(@PathVariable String egn) {
@@ -45,8 +50,6 @@ public class PersonController {
     }
 
     // 3. Търсене на ФЛ по име и възраст
-
-
     @GetMapping("/search")
     public ResponseEntity<List<Person>> search(@Valid PersonSearchDTO request) {
 
@@ -57,22 +60,6 @@ public class PersonController {
         );
         return ResponseEntity.ok(results);
     }
-
-/*    @GetMapping()
-    public ResponseEntity<List<Person>> search(
-            @RequestParam(required = false) String firstName,
-            @RequestParam(defaultValue = "0") int minAge,
-            @RequestParam(required = false, defaultValue = "100") Integer maxAge) {
-
-        if (maxAge != null && minAge > maxAge) {
-            int temp = minAge;
-            minAge = maxAge;
-            maxAge = temp;
-        }
-
-        List<Person> results = service.searchByFirstNameAndAge(firstName, minAge, maxAge);
-        return ResponseEntity.ok(results);
-    }*/
 
     @PutMapping("/{id}")
     public ResponseEntity<Person> updateById(

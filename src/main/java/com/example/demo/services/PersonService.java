@@ -29,7 +29,9 @@ public class PersonService {
     public List<Person> searchByFirstNameAndAge(String firstname, int minAge, int maxAge) {
         if (maxAge < 0) {
             throw new IllegalArgumentException("Max Age can't be under 0");
-        } else {
+        } else if (!firstname.matches("^[A-Za-zА-Яа-я\\-]+$")) {
+            throw new IllegalArgumentException("Собственото име не може да съдържа числа!");
+        } else{
             return repository.findByFirstNameAndAgeBetween(firstname, minAge, maxAge);
         }
     }

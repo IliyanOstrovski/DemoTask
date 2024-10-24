@@ -28,18 +28,21 @@ import lombok.Setter;
 
     @Column
     @NotBlank(message = "Собственото име е задължително")
+    @Pattern(regexp = "^[A-Za-zА-Яа-я\\-]+$", message = "Собственото име не може да съдържа числа!")
     private String firstName;
     @Column
     @NotBlank(message = "Бащиното име е задължително")
+    @Pattern(regexp = "^[A-Za-zА-Яа-я]", message = "Бащиното име не може да съдържа числа!")
     private String middleName;
     @Column
     @NotBlank(message = "Фамилията е задължителна")
+    @Pattern(regexp = "^[A-Za-zА-Яа-я]", message = "Фамилията не може да съдържа числа!")
     private String lastName;
     @Column(unique = true)
-    @Pattern(regexp = "\\d{10}", message = "ЕГН-то трябва да съдържа 10 цифри")
+    @Pattern(regexp = "\\d{10}", message = "ЕГН-то трябва да съдържа 10 цифри!")
     private String egn;
     @Column
-    @Min(value = 0, message = "Възрастта трябва да бъде положително число")
+    @Min(value = 0, message = "Възрастта трябва да бъде положително число!")
     private int age;
 
 }
