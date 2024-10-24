@@ -1,9 +1,10 @@
 package com.example.demo.configurations;
 
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -19,6 +20,5 @@ public class WebConfig implements WebMvcConfigurer {
         resolver.setOneIndexedParameters(true);
         argumentResolvers.add(resolver);
     }
-
 }
 

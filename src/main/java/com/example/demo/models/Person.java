@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,17 +29,21 @@ import lombok.Setter;
 
     @Column
     @NotBlank(message = "Собственото име е задължително")
+    @Schema(description = "Собствено име на физическото лице")
     @Pattern(regexp = "^[A-Za-zА-Яа-я\\-]+$", message = "Собственото име не може да съдържа числа!")
     private String firstName;
     @Column
     @NotBlank(message = "Бащиното име е задължително")
-    @Pattern(regexp = "^[A-Za-zА-Яа-я]", message = "Бащиното име не може да съдържа числа!")
+    @Schema(description = "Бащино име на физическото лице")
+    @Pattern(regexp = "^[A-Za-zА-Яа-я]+$", message = "Бащиното име не може да съдържа числа!")
     private String middleName;
     @Column
     @NotBlank(message = "Фамилията е задължителна")
-    @Pattern(regexp = "^[A-Za-zА-Яа-я]", message = "Фамилията не може да съдържа числа!")
+    @Schema(description = "Фамилия на физическото лице")
+    @Pattern(regexp = "^[A-Za-zА-Яа-я]+$", message = "Фамилията не може да съдържа числа!")
     private String lastName;
     @Column(unique = true)
+    @Schema(description = "ЕГН по лична карта!")
     @Pattern(regexp = "\\d{10}", message = "ЕГН-то трябва да съдържа 10 цифри!")
     private String egn;
     @Column

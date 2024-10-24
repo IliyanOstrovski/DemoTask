@@ -3,6 +3,8 @@ package com.example.demo.controllers;
 import com.example.demo.dto.PersonSearchDTO;
 import com.example.demo.models.Person;
 import com.example.demo.services.PersonService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +36,15 @@ public class PersonController {
     }
 
     // 1. Регистриране на ФЛ
+
     @PostMapping
+    @Operation(summary = "Регистрация на физическо лице",
+            responses = {
+            @ApiResponse(responseCode = "201", description = "Физическото лице е регистрирано успешно!"),
+                    @ApiResponse(responseCode = "200", description = "Успешна регистрация"),
+                    @ApiResponse(responseCode = "400", description = "Невалидни данни"),
+                    @ApiResponse(responseCode = "500", description = "Сървърна грешка")
+            })
     public ResponseEntity<Person> registerPerson(@Valid @RequestBody Person person) {
         Person savedLice = service.savePerson(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedLice);
@@ -43,6 +53,12 @@ public class PersonController {
 
     // 2. Търсене на ФЛ по ЕГН
     @GetMapping("/egn/{egn}")
+    @Operation(summary = "Търсене на физическо лице по ЕГН",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"),
+                    @ApiResponse(responseCode = "400", description = "Невалидни данни"),
+                    @ApiResponse(responseCode = "500", description = "Сървърна грешка")
+            })
     public ResponseEntity<Person> getByEgn(@PathVariable String egn) {
         return service.getByEgn(egn)
                 .map(ResponseEntity::ok)
@@ -51,6 +67,12 @@ public class PersonController {
 
     // 3. Търсене на ФЛ по име и възраст
     @GetMapping("/search")
+    @Operation(summary = "Търсене на физическо лице по име и години",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"),
+                    @ApiResponse(responseCode = "400", description = "Невалидни данни"),
+                    @ApiResponse(responseCode = "500", description = "Сървърна грешка")
+            })
     public ResponseEntity<List<Person>> search(@Valid PersonSearchDTO request) {
 
         List<Person> results = service.searchByFirstNameAndAge(
@@ -62,6 +84,12 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Обновяване на физическо лице по идентификатор",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Физическото лице е с обновени данни успешно!"),
+                    @ApiResponse(responseCode = "400", description = "Невалидни данни"),
+                    @ApiResponse(responseCode = "500", description = "Сървърна грешка")
+            })
     public ResponseEntity<Person> updateById(
             @PathVariable Long id,
             @RequestBody Person updatedLice) {
@@ -71,6 +99,12 @@ public class PersonController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Изтриване на физическо лице по идентификатор",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Физическото лице е изтрито успешно!"),
+                    @ApiResponse(responseCode = "400", description = "Невалидни данни"),
+                    @ApiResponse(responseCode = "500", description = "Сървърна грешка")
+            })
     public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
         boolean isDeleted = service.deleteById(id);
         return isDeleted ? ResponseEntity.noContent().build()
