@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -48,8 +49,7 @@ import lombok.Setter;
     private String egn;
     @Column
     @Min(value = 0, message = "Възрастта трябва да бъде положително число!")
+    @Max(value = 120, message = "Възрастта трябва да бъде по-малка или равна на 120!")
     private int age;
 
 }
-
-
