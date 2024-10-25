@@ -1,11 +1,14 @@
 package com.example.demo.services;
 
 import com.example.demo.models.Person;
+import com.example.demo.repositories.PersonPagingRepository;
 import com.example.demo.repositories.PersonRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,43 +16,31 @@ import java.util.Optional;
 public class PersonService {
 
     private final PersonRepository repository;
+    private final PersonPagingRepository personPagingRepository;
 
-    public PersonService(PersonRepository repository) {
+    public PersonService(PersonRepository repository, PersonPagingRepository personPagingRepository) {
         this.repository = repository;
+        this.personPagingRepository = personPagingRepository;
     }
 
     public Person savePerson(Person person) {
         return repository.save(person);
     }
 
-    public Optional<Person> getByEgn(String egn) {
-        return repository.findByEgn(egn);
+    public List<Person> findPersonByFirstName(String firstName, Pageable pageable) {
+        return personPagingRepository.findByFirstNameLike(firstName+"%", pageable);
     }
 
-    public List<Person> findByAgeBetween(int minAge, int maxAge) {
-        if (maxAge < 0) {
-            throw new IllegalArgumentException("Max Age can't be under 0");
-        } else{
-            return repository.findByAgeBetween(minAge, maxAge);
-        }
+    public List<Person> findAllFirstNameAndAgeAndEgn(String firstName, Integer minAge, String egn) {
+        return repository.findByFirstNameAndAgeOrEgn(firstName, minAge, egn);
     }
-
-    public List<Person> findByFirstNameAndAgeBetween(String firstName, int minAge, int maxAge) {
-        return repository.findByFirstNameAndAgeBetween(firstName, minAge, maxAge);
-
-    }
-    public List<Person> getByName(String firstName) {
-        return repository.findByFirstNameIgnoreCase(firstName); // Case-insensitive search
-    }
-
 
     public List<Person> searchByAgeRange(int minAge, int maxAge) {
-
         return repository.findByAgeBetween(minAge, maxAge);
     }
 
-    public Page<Person> showPerson(Pageable pageable) {
-        return repository.findAll(pageable);
+    public List<Person> saveAllPersons(List<Person> persons) {
+        return (List<Person>) repository.saveAll(persons); // This saves all persons and returns a list
     }
 
     public Optional<Person> updateById(Long id, Person updatePerson) {

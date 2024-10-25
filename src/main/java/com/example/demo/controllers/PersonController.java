@@ -10,13 +10,19 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -46,31 +52,54 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPerson);
     }
 
-    // 2. Търсене на ФЛ по ЕГН
-    @GetMapping("/egn/{egn}")
-    @Tag(name = "Търсене по ЕГН", description = "Person API")
-    @Operation(summary = "Търсене на физическо лице по ЕГН", description = "Попълнете полето долу", responses = {@ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"), @ApiResponse(responseCode = "400", description = "Невалидни данни"), @ApiResponse(responseCode = "500", description = "Сървърна грешка")})
-    public ResponseEntity<Person> getByEgn(@PathVariable String egn) {
-        return service.getByEgn(egn).map(ResponseEntity::ok).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
-    // 3. Търсене на ФЛ по име и възраст
     @GetMapping("/search")
-    @Tag(name = "Търсене по Име и години", description = "Person API")
-    @Operation(summary = "Търсене на физическо лице по име и години", description = "Попълнете полето долу", responses = {@ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"), @ApiResponse(responseCode = "400", description = "Невалидни данни"), @ApiResponse(responseCode = "500", description = "Сървърна грешка")})
-    public ResponseEntity<List<Person>> search(@RequestParam(required = false) String firstName, @RequestParam(required = false) @Min(0) @Max(120) Integer minAge, @RequestParam(required = false) @Min(0) @Max(120) Integer maxAge) {
-
-        // Manual validation for age range
-        if (minAge != null && maxAge != null && minAge > maxAge) {
-            return ResponseEntity.badRequest().body(null);
+    @Tag(name = "Търсене на съществуващо ФЛ", description = "Person API")
+    @Operation(summary = "Търсене на същестуващо физическо лице", description = "Попълнете полето долу", responses = {@ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"), @ApiResponse(responseCode = "400", description = "Невалидни данни"), @ApiResponse(responseCode = "500", description = "Сървърна грешка")})
+    public ResponseEntity<List<Person>> search(@RequestParam(required = false) String firstName,
+                                               @RequestParam(required = false) @Min(1) @Max(120) Integer minAge,
+                                               @RequestParam(required = false) @Min(10) @Max(10) String egn) {
+        // Validate parameters
+        if (firstName == null && minAge == null && egn == null) {
+            return ResponseEntity.badRequest().body(null); // Or return a custom error message
         }
 
-        List<Person> results = service.findByFirstNameAndAgeBetween(firstName, minAge, maxAge);
-
+        List<Person> results = service.findAllFirstNameAndAgeAndEgn(firstName, minAge, egn);
         return ResponseEntity.ok(results);
     }
 
-    // 4. Обновяване на ФЛ по идентификатор
+    @Tag(name = "Търсене всички съществуващи ФЛ по име ", description = "Person API")
+    @Operation(summary = "Търсене на същестуващо физическо лице",
+            description = "Попълнете полето долу",
+            responses = {@ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"),
+                    @ApiResponse(responseCode = "400", description = "Не може да бъде отрицателно число!"),
+                    @ApiResponse(responseCode = "500", description = "Сървърна грешка")})
+
+    @RequestMapping(value = "/quickSearchAction", method = RequestMethod.GET)
+    public @ResponseBody List<Person> quickSearchAction(
+            @RequestParam(value = "firstName") String firstName, Pageable pageable
+    ){
+        return service.findPersonByFirstName(firstName, pageable);
+    }
+   /* @RequestMapping(value = "/quickSearchAction", method = RequestMethod.GET)
+    public @ResponseBody List<Person> quickSearchAction(
+            @RequestParam(value = "firstName") String firstName,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "1") int size) {
+
+*//*        if (page < 0) {
+            return ResponseEntity.badRequest().body("Page number must not be negative");
+        }
+        if (size < 1) {
+            return ResponseEntity.badRequest().body("Size must be at least 1");
+        }*//*
+        // Create a Pageable instance without sorting
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Perform the search
+        return service.personPagingRepository("%" + firstName + "%", pageable);
+    }*/
+
+
     @PutMapping("/{id}")
     @Tag(name = "Обновяване на данни", description = "Person API")
     @Operation(summary = "Обновяване на физическо лице по идентификатор", description = "Попълнете полето долу", responses = {@ApiResponse(responseCode = "201", description = "Физическото лице е с обновени данни успешно!"), @ApiResponse(responseCode = "400", description = "Невалидни данни"), @ApiResponse(responseCode = "500", description = "Сървърна грешка")})
