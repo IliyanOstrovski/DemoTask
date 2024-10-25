@@ -6,8 +6,6 @@ import com.example.demo.services.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +36,7 @@ public class PersonController {
     // 1. Регистриране на ФЛ
 
     @PostMapping
-    @Operation(summary = "Регистрация на физическо лице",
+    @Operation(summary = "Регистрация на физическо лице", description = "Попълнете полето долу",
             responses = {
             @ApiResponse(responseCode = "201", description = "Физическото лице е регистрирано успешно!"),
                     @ApiResponse(responseCode = "200", description = "Успешна регистрация"),
@@ -52,8 +50,9 @@ public class PersonController {
 
 
     // 2. Търсене на ФЛ по ЕГН
+
     @GetMapping("/egn/{egn}")
-    @Operation(summary = "Търсене на физическо лице по ЕГН",
+    @Operation(summary = "Търсене на физическо лице по ЕГН", description = "Попълнете полето долу",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"),
                     @ApiResponse(responseCode = "400", description = "Невалидни данни"),
@@ -67,7 +66,7 @@ public class PersonController {
 
     // 3. Търсене на ФЛ по име и възраст
     @GetMapping("/search")
-    @Operation(summary = "Търсене на физическо лице по име и години",
+    @Operation(summary = "Търсене на физическо лице по име и години", description = "Попълнете полето долу",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"),
                     @ApiResponse(responseCode = "400", description = "Невалидни данни"),
@@ -84,7 +83,7 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Обновяване на физическо лице по идентификатор",
+    @Operation(summary = "Обновяване на физическо лице по идентификатор", description = "Попълнете полето долу",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Физическото лице е с обновени данни успешно!"),
                     @ApiResponse(responseCode = "400", description = "Невалидни данни"),
@@ -99,7 +98,7 @@ public class PersonController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Изтриване на физическо лице по идентификатор",
+    @Operation(summary = "Изтриване на физическо лице по идентификатор", description = "Попълнете полето долу",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Физическото лице е изтрито успешно!"),
                     @ApiResponse(responseCode = "400", description = "Невалидни данни"),
