@@ -26,14 +26,26 @@ public class PersonService {
         return repository.findByEgn(egn);
     }
 
-    public List<Person> searchByFirstNameAndAge(String firstname, int minAge, int maxAge) {
+    public List<Person> findByAgeBetween(int minAge, int maxAge) {
         if (maxAge < 0) {
             throw new IllegalArgumentException("Max Age can't be under 0");
-        } else if (!firstname.matches("^[A-Za-zА-Яа-я\\-]+$")) {
-            throw new IllegalArgumentException("Собственото име не може да съдържа числа!");
         } else{
-            return repository.findByFirstNameAndAgeBetween(firstname, minAge, maxAge);
+            return repository.findByAgeBetween(minAge, maxAge);
         }
+    }
+
+    public List<Person> findByFirstNameAndAgeBetween(String firstName, int minAge, int maxAge) {
+        return repository.findByFirstNameAndAgeBetween(firstName, minAge, maxAge);
+
+    }
+    public List<Person> getByName(String firstName) {
+        return repository.findByFirstNameIgnoreCase(firstName); // Case-insensitive search
+    }
+
+
+    public List<Person> searchByAgeRange(int minAge, int maxAge) {
+
+        return repository.findByAgeBetween(minAge, maxAge);
     }
 
     public Page<Person> showPerson(Pageable pageable) {

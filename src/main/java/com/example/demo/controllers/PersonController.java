@@ -5,6 +5,7 @@ import com.example.demo.models.Person;
 import com.example.demo.services.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
@@ -35,9 +36,10 @@ public class PersonController {
 
     // 1. Регистриране на ФЛ
     @PostMapping
+    @Tag(name = "Регистрация", description = "Person API")
     @Operation(summary = "Регистрация на физическо лице", description = "Попълнете полето долу",
             responses = {
-            @ApiResponse(responseCode = "201", description = "Физическото лице е регистрирано успешно!"),
+                    @ApiResponse(responseCode = "201", description = "Физическото лице е регистрирано успешно!"),
                     @ApiResponse(responseCode = "200", description = "Успешна регистрация"),
                     @ApiResponse(responseCode = "400", description = "Невалидни данни"),
                     @ApiResponse(responseCode = "500", description = "Сървърна грешка")
@@ -50,6 +52,7 @@ public class PersonController {
 
     // 2. Търсене на ФЛ по ЕГН
     @GetMapping("/egn/{egn}")
+    @Tag(name = "Търсене по ЕГН", description = "Person API")
     @Operation(summary = "Търсене на физическо лице по ЕГН", description = "Попълнете полето долу",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"),
@@ -64,6 +67,7 @@ public class PersonController {
 
     // 3. Търсене на ФЛ по име и възраст
     @GetMapping("/search")
+    @Tag(name = "Търсене по Име и години", description = "Person API")
     @Operation(summary = "Търсене на физическо лице по име и години", description = "Попълнете полето долу",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"),
@@ -72,7 +76,7 @@ public class PersonController {
             })
     public ResponseEntity<List<Person>> search(@Valid PersonSearchDTO request) {
 
-        List<Person> results = service.searchByFirstNameAndAge(
+        List<Person> results = service.findByFirstNameAndAgeBetween(
                 request.getFirstName(),
                 request.getMinAge(),
                 request.getMaxAge()
@@ -82,6 +86,7 @@ public class PersonController {
 
     // 4. Обновяване на ФЛ по идентификатор
     @PutMapping("/{id}")
+    @Tag(name = "Обновяване на данни", description = "Person API")
     @Operation(summary = "Обновяване на физическо лице по идентификатор", description = "Попълнете полето долу",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Физическото лице е с обновени данни успешно!"),
@@ -98,6 +103,7 @@ public class PersonController {
 
     // 5. Изтриване на ФЛ по идентификатор
     @DeleteMapping("/{id}")
+    @Tag(name = "Изтриване на ФЛ по идентификатор", description = "Person API")
     @Operation(summary = "Изтриване на физическо лице по идентификатор", description = "Попълнете полето долу",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Физическото лице е изтрито успешно!"),

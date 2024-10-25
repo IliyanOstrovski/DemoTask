@@ -12,10 +12,13 @@ import java.util.List;
 public interface PersonRepository extends CrudRepository<Person, Long> {
 
     Optional<Person> findByEgn(String egn);
-    List<Person> findByLastNameStartingWithAndAgeGreaterThan(String lastNamePrefix, int age);
-    List<Person> findByFirstNameAndAgeBetween(String firstName, int ageStart, int ageEnd);
+    List<Person> findByFirstNameAndAgeBetween(String firstName, int minAge, int maxAge);
+    List<Person> findByAgeBetween(int ageStart, int ageEnd);
     Page<Person> findAll(Pageable pageable);
 
-    }
+    List<Person> findByFirstNameIgnoreCase(String name);
+
+}
+
 
 
