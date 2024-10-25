@@ -36,7 +36,6 @@ public class PersonController {
         this.service = service;
     }
 
-    // 1. Регистриране на ФЛ
     @PostMapping
     @Tag(name = "Регистрация", description = "Person API")
     @Operation(summary = "Регистрация на физическо лице", description = "Попълнете полето долу", responses = {@ApiResponse(responseCode = "201", description = "Физическото лице е регистрирано успешно!"), @ApiResponse(responseCode = "200", description = "Успешна регистрация"), @ApiResponse(responseCode = "400", description = "Невалидни данни"), @ApiResponse(responseCode = "500", description = "Сървърна грешка")})
@@ -73,12 +72,11 @@ public class PersonController {
             responses = {@ApiResponse(responseCode = "200", description = "Физическото лице е намерено успешно!"),
                     @ApiResponse(responseCode = "400", description = "Не може да бъде отрицателно число!"),
                     @ApiResponse(responseCode = "500", description = "Сървърна грешка")})
-
     @RequestMapping(value = "/quickSearchAction", method = RequestMethod.GET)
     public @ResponseBody List<Person> quickSearchAction(
             @RequestParam(value = "firstName") String firstName, Pageable pageable
-    ){
-        return service.findPersonByFirstName(firstName, pageable);
+    ) {
+        return service.findPersonByFirstNameStartWith(firstName, pageable);
     }
    /* @RequestMapping(value = "/quickSearchAction", method = RequestMethod.GET)
     public @ResponseBody List<Person> quickSearchAction(
@@ -99,7 +97,6 @@ public class PersonController {
         return service.personPagingRepository("%" + firstName + "%", pageable);
     }*/
 
-
     @PutMapping("/{id}")
     @Tag(name = "Обновяване на данни", description = "Person API")
     @Operation(summary = "Обновяване на физическо лице по идентификатор", description = "Попълнете полето долу", responses = {@ApiResponse(responseCode = "201", description = "Физическото лице е с обновени данни успешно!"), @ApiResponse(responseCode = "400", description = "Невалидни данни"), @ApiResponse(responseCode = "500", description = "Сървърна грешка")})
@@ -114,7 +111,6 @@ public class PersonController {
         return service.updateById(id, updatedPerson).map(ResponseEntity::ok).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    // 5. Изтриване на ФЛ по идентификатор
     @DeleteMapping("/{id}")
     @Tag(name = "Изтриване на ФЛ по идентификатор", description = "Person API")
     @Operation(summary = "Изтриване на физическо лице по идентификатор", description = "Попълнете полето долу", responses = {@ApiResponse(responseCode = "201", description = "Физическото лице е изтрито успешно!"), @ApiResponse(responseCode = "400", description = "Невалидни данни"), @ApiResponse(responseCode = "500", description = "Сървърна грешка")})

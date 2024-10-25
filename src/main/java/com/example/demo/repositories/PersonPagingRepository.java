@@ -7,6 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface PersonPagingRepository extends PagingAndSortingRepository<Person, Integer> {
-
-    List<Person> findByFirstNameLike(String firstName, Pageable pageable);
+    List<Person> findByFirstNameStartingWith(String firstName, Pageable pageable);
 }
