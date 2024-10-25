@@ -34,7 +34,6 @@ public class PersonController {
     }
 
     // 1. Регистриране на ФЛ
-
     @PostMapping
     @Operation(summary = "Регистрация на физическо лице", description = "Попълнете полето долу",
             responses = {
@@ -50,7 +49,6 @@ public class PersonController {
 
 
     // 2. Търсене на ФЛ по ЕГН
-
     @GetMapping("/egn/{egn}")
     @Operation(summary = "Търсене на физическо лице по ЕГН", description = "Попълнете полето долу",
             responses = {
@@ -82,6 +80,7 @@ public class PersonController {
         return ResponseEntity.ok(results);
     }
 
+    // 4. Обновяване на ФЛ по идентификатор
     @PutMapping("/{id}")
     @Operation(summary = "Обновяване на физическо лице по идентификатор", description = "Попълнете полето долу",
             responses = {
@@ -97,6 +96,7 @@ public class PersonController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    // 5. Изтриване на ФЛ по идентификатор
     @DeleteMapping("/{id}")
     @Operation(summary = "Изтриване на физическо лице по идентификатор", description = "Попълнете полето долу",
             responses = {
@@ -111,5 +111,3 @@ public class PersonController {
     }
 
 }
-
-
